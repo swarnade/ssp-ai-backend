@@ -12,11 +12,6 @@ const ChatHistory = new mongoose.Schema({
         type: String,
         required: true
     },
-    IpAddress:
-    {
-        type: String,
-        required: true
-    },
     Date: {
         type: Date,
         default: Date.now,

@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const rateLimit = require('express-rate-limit');
 const app = express();
 const PORT = process.env.SERVER_PORT || 5555;
 
@@ -16,13 +15,6 @@ const connectDB = require("./databases/MongoDB")
 connectDB();
 const ChatHistoryDB = require("./databases/chathistory")
 
-const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000,
-    max: 2, 
-    message: {result:"Too many Request From This IP"},
-    standardHeaders: true,
-    legacyHeaders: false,
-});
 
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
@@ -41,13 +33,8 @@ app.get('/allversions', (req, res) => {
     res.send(version)
 })
 
-app.post('/generate',limiter, async (req, res) => {
+app.post('/generate', async (req, res) => {
     const { input, model } = req.body;
-
-
-    let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || "0.0.0.0";
-
-
     if (!input) {
         return res.status(400).send({ error: "Input is required." });
     }
@@ -63,7 +50,6 @@ app.post('/generate',limiter, async (req, res) => {
             Input: input,
             Output: result,
             Model: model,
-            IpAddress: ip
         }).save()
             .then(doc => {
                 res.send({ result, });
