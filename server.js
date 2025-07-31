@@ -67,7 +67,6 @@ app.post('/generate', async (req, res) => {
             Input: input,
             Output: result,
             Model: model,
-            IpAddress: ip
         }).save()
             .then(doc => {
                 res.send({ result, });
